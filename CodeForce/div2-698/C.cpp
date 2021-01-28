@@ -51,55 +51,20 @@ int main()
 	int cnt; ci(cnt);
 	while (cnt--)
 	{
-		LL n; ci(n);
-		map<LL, int> xset;
-		fa(i, 0, 2 * n)
-		{
-			LL x; ci(x); ++xset[x];
-		}
+		LL n, k; ci(n >> k);
 
 		vector <LL> vi;
-		bool ck = true;
-		for (auto x : xset)
+		fa(i, 0, n)
 		{
-			if (x.second != 2)
-			{
-				ck = false;
-				break;
-			}
-
-			vi.push_back(x.first);
+			LL x; ci(x); vi.push_back(x);
 		}
 
-		if (!ck)
-		{
-			co("NO\n");
-			continue;
-		}
-
-		reverse(vi.begin(), vi.end());
-
-		LL l = 0;
-
-		for (auto& x : vi)
-		{
-			//ce(x << endl);
-			x -= l;
-
-			if (x <=0|| x % (n * 2) != 0)
-			{
-				ck = false;
-				break;
-			}
-
-			LL tar = x / (n * 2);
-			//ce(tar << endl);
-			l += tar * 2;
-			--n;
-		}
-
+		LL a = vi[1] - vi[0];
+		fa(i, 1, n) a = gcd(a, vi[i] - vi[i - 1]);
+		
+		bool ck = false;
+		fa(i, 0, n) ck |= abs(k - vi[i]) % a == 0;
 		ck ? co("YES\n") : co("NO\n");
-		AE;
 	}
 	return 0;
 }
