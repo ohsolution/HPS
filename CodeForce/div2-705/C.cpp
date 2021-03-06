@@ -58,6 +58,7 @@ const int INF = 1e9 + 7;
 const LL LNF = (LL)5e18 + 7ll;
 const LL mod = 1e9 + 7;
 
+
 int main()
 {
 #ifdef OHSOLUTION
@@ -67,25 +68,87 @@ int main()
 	int cnt; ci(cnt);
 	while (cnt--)
 	{
-		int n, k;
+		vector <int> alph(26, 0);
+		int n, k; ci(n >> k);
 
-		ci(n >> k);
-
-		vector <LL> ans;
-
-		fa(i, k + 1, n + 1) ans.push_back(i);
-
-		int t = ceil(k/2.0);
-
-		fa(i, t, k) ans.push_back(i);
-
-		co(ans.size() << "\n");
-
-		sort(ans.begin(), ans.end());
 		
-		for (auto x : ans) co(x << " ");
-		co("\n");
+		string s; ci(s);
+		
+		if ((n % k) != 0)
+		{
+			co(-1 << "\n");
+			continue;
+		}
 
+
+		for (auto& x : s) ++alph[x - 'a'];
+		
+		bool ck = false;
+		int r = 0;
+
+		auto check = [&](int re)
+		{
+			int ret = 0;
+			fa(i, 0, 26)
+			{
+				ret += (k - alph[i] % k) % k;
+				if (ret > re) return false;
+			}
+
+			return true;
+		};
+
+		if (check(0))
+		{
+			co(s << "\n");
+			continue;
+		}
+		
+		fd(i, s.size() - 1,-1)
+		{			
+			--alph[s[i] - 'a'];			
+			
+			int tmp = (s[i] - 'a')+1;
+
+			while (tmp <= 25)
+			{
+				++alph[tmp];
+				if (check(r))
+				{
+					ck = true;
+					string ans = "";
+					fa(j, 0, i) ans += s[j];
+					ans +=( tmp + 'a');
+
+					fa(j, 0, 26)
+					{
+						int tt = (k - alph[j] % k) % k;
+						r -= tt;
+					}
+
+					assert(r >= 0);
+					while (r--) ans += 'a';
+
+					fa(j, 0, 26)
+					{
+						int tt = (k - alph[j] % k) % k;
+						while (tt--) ans += (j + 'a');
+					}
+
+					co(ans << "\n");
+				}
+				--alph[tmp];
+				++tmp;
+
+				if (ck) break;
+			}
+
+			if (ck) break;
+			++r;
+		}
+
+
+		if (!ck) co("-1\n");
 	}
 	return 0;
 }
